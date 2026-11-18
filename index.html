@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Irodori — Pink &amp; Kuning</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 760px;
+    width: 100%;
+    padding: 30px;
+    position: relative;
+  }
+  h1 { font-size: 1.4em; color: #333; margin-bottom: 6px; text-align: center; }
+  .subtitle { text-align: center; color: #888; font-size: 0.85em; margin-bottom: 20px; }
+
+  .menu { text-align: center; }
+  .menu .btn { margin-top: 12px; }
+  .menu-desc { color: #666; font-size: 0.95em; margin-bottom: 8px; line-height: 1.6; }
+  .badge-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
+  .badge {
+    background: #f0f2ff; color: #667eea; padding: 6px 14px; border-radius: 20px;
+    font-size: 0.85em; font-weight: 600;
+  }
+
+  .mode-explanation {
+    background: #f8f9ff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    text-align: left;
+    font-size: 0.88em;
+    line-height: 1.65;
+    color: #444;
+    border-left: 4px solid #667eea;
+  }
+  .mode-explanation > strong {
+    color: #667eea;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+  }
+  .mode-explanation .mode-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #dde1ff;
+  }
+  .mode-explanation .mode-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .mode-explanation .mode-item strong { color: #333; }
+  .mode-explanation .mode-item small { display: block; color: #666; margin-top: 3px; }
+
+  .session-box {
+    background: #f8f9ff;
+    border: 2px dashed #667eea;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: left;
+  }
+  .session-info { display: flex; align-items: center; gap: 8px; font-size: 0.95em; color: #444; flex-wrap: wrap;}
+  .session-info strong { color: #667eea; font-family: monospace; font-size: 1.1em; background: #e8ecff; padding: 2px 8px; border-radius: 6px;}
+  .session-btn { background: #667eea; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.85em; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.2s;}
+  .session-btn:hover { background: #764ba2; }
+
+  .input-group { text-align: left; margin-bottom: 15px; }
+  .input-group label { display: block; font-size: 0.9em; font-weight: 600; color: #444; margin-bottom: 5px; }
+  .input-group input { 
+    width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; transition: 0.2s;
+  }
+  .input-group input:focus { border-color: #667eea; box-shadow: 0 0 5px rgba(102,126,234,0.3); }
+
+  .progress-bar {
+    height: 8px; background: #eee; border-radius: 10px; overflow: hidden; margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%; transition: width 0.3s ease;
+  }
+  .info-row {
+    display: flex; justify-content: space-between; font-size: 0.85em;
+    color: #666; margin-bottom: 12px; font-weight: 600;
+  }
+  .timer-box {
+    background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px;
+    font-weight: 700; font-size: 0.85em; transition: all 0.2s;
+  }
+  .timer-box.warning { background: #f8d7da; color: #721c24; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+
+  .question {
+    font-size: 1.05em; color: #222; margin-bottom: 20px; line-height: 1.75;
+    min-height: 60px;
+    white-space: pre-line;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option {
+    padding: 14px 18px; border: 2px solid #e0e0e0; border-radius: 12px;
+    cursor: pointer; transition: all 0.2s; font-size: 1em; color: #333;
+    background: #fafafa; text-align: left; display: flex; align-items: center; gap: 10px;
+  }
+  .option:hover:not(.disabled) { border-color: #667eea; background: #f0f2ff; transform: translateX(4px); }
+  .option .label { font-weight: 700; color: #667eea; min-width: 22px; }
+  .option.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+  .option.correct .label { color: #28a745; }
+  .option.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+  .option.wrong .label { color: #dc3545; }
+  .option.disabled { cursor: not-allowed; }
+  .option.selected { border-color: #667eea; background: #e8ecff; }
+
+  .feedback {
+    padding: 12px 14px; border-radius: 10px; font-weight: 600;
+    margin-bottom: 15px; display: none; text-align: left; line-height: 1.6;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #d4edda; color: #155724; }
+  .feedback.wrong { background: #f8d7da; color: #721c24; }
+  .feedback small { display: block; margin-top: 6px; font-weight: 400; opacity: 0.85; }
+
+  .btn {
+    width: 100%; padding: 14px; border: none; border-radius: 12px;
+    font-size: 1em; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    background: linear-gradient(90deg, #667eea, #764ba2); color: #fff;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn.secondary { background: #eee; color: #333; }
+  .btn.secondary:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .btn-row { display: flex; gap: 10px; }
+
+  .result-screen { text-align: center; display: none; }
+  .result-screen.show { display: block; }
+  .score-big {
+    font-size: 3.5em; font-weight: 800;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin: 10px 0;
+  }
+  .result-detail { color: #666; margin-bottom: 20px; font-size: 1.05em; line-height: 1.6; }
+  .review-list { text-align: left; margin-top: 20px; max-height: 420px; overflow-y: auto; }
+  .review-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9em; }
+  .review-item.correct { border-left: 4px solid #28a745; }
+  .review-item.wrong { border-left: 4px solid #dc3545; }
+  .review-q { font-weight: 600; margin-bottom: 4px; color: #333; white-space: pre-line; }
+  .review-a { color: #666; font-size: 0.9em; }
+  .review-a .ok { color: #28a745; font-weight: 700; }
+  .review-a .no { color: #dc3545; font-weight: 700; }
+  .review-p {
+    color: #444; margin-top: 6px; font-size: 0.88em;
+    background: #f8f9ff; padding: 8px 10px; border-radius: 6px;
+    border-left: 3px solid #667eea;
+  }
+
+  .lb-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.92em; }
+  .lb-table th, .lb-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; }
+  .lb-table th { background: #f0f2ff; color: #667eea; font-weight: 700; }
+  .lb-table tr:nth-child(1) td { font-weight: 700; color: #b8860b; }
+  .lb-empty { color: #999; text-align: center; padding: 30px; font-style: italic; }
+
+  .hidden { display: none !important; }
+
+  /* ====== COUNTDOWN 3-2-1-MULAI ====== */
+  .countdown-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(102,126,234,0.97) 0%, rgba(118,75,162,0.97) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overflow: hidden;
+  }
+  .countdown-overlay::before {
+    content: '';
+    position: absolute;
+    width: 140vmax; height: 140vmax;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 62%);
+    animation: countdownGlow 3.6s ease-in-out infinite;
+  }
+  @keyframes countdownGlow {
+    0%, 100% { transform: scale(1); opacity: 0.55; }
+    50%      { transform: scale(1.12); opacity: 0.9; }
+  }
+  .countdown-number {
+    position: relative;
+    font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
+    font-size: clamp(5rem, 24vw, 12rem);
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 12px 45px rgba(0,0,0,0.35), 0 0 70px rgba(255,255,255,0.30);
+    user-select: none;
+    will-change: transform, opacity;
+  }
+  .countdown-number.word {
+    font-size: clamp(2.6rem, 11vw, 5.5rem);
+    letter-spacing: 8px;
+    padding-left: 8px;
+    background: linear-gradient(90deg, #ffffff 0%, #ffe680 55%, #ffd24d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.35));
+  }
+  .countdown-number.pop {
+    animation: countdownPop 0.62s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes countdownPop {
+    0%   { transform: scale(0.30); opacity: 0; }
+    55%  { transform: scale(1.14); opacity: 1; }
+    78%  { transform: scale(0.98); }
+    100% { transform: scale(1);    opacity: 1; }
+  }
+  .countdown-hint {
+    position: absolute;
+    bottom: 12%;
+    width: 100%;
+    text-align: center;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95em;
+    font-weight: 600;
+    letter-spacing: 1px;
+    animation: hintFade 1.4s ease-in-out infinite;
+  }
+  @keyframes hintFade { 0%,100%{opacity:0.45;} 50%{opacity:1;} }
+
+  @media (max-width: 500px) {
+    .container { padding: 20px; }
+    h1 { font-size: 1.2em; }
+    .question { font-size: 1em; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="menu-screen" class="menu">
+    <h1>🇯🇵 Latihan Irodori Pink &amp; Kuning</h1>
+    <p class="subtitle" id="menu-subtitle">0 Soal • Referensi IRODORI</p>
+    
+    <div class="badge-row">
+      <span class="badge" id="timer-badge">⏱️ Min 30s</span>
+      <span class="badge">🔀 Soal Acak</span>
+      <span class="badge">🏆 Leaderboard</span>
+      <span class="badge">🔊 Suara</span>
+    </div>
+
+    <div class="session-box">
+      <div class="session-info">
+        🗂️ Sesi Aktif: <strong id="session-id-display">Memuat...</strong>
+      </div>
+      <p style="font-size: 0.8em; color: #666; margin-top: 8px;">
+        *Klik tombol di bawah untuk menyalin link sesi ini dan bagikan ke siswa. Semua laporan dari link ini akan dikelompokkan dalam 1 sesi.
+      </p>
+      <button class="session-btn" id="copy-session-btn">📋 Salin Link Sesi</button>
+    </div>
+
+    <div class="input-group">
+      <label>Nama Siswa</label>
+      <input type="text" id="student-name" placeholder="Masukkan nama lengkap..." />
+    </div>
+    <div class="input-group">
+      <label>Kelas</label>
+      <input type="text" id="student-class" placeholder="Contoh: X-A / XII IPA 1" />
+    </div>
+
+    <p class="menu-desc">Pilih mode di bawah ini:</p>
+
+    <div class="mode-explanation">
+      <strong>📖 Penjelasan Mode Latihan &amp; Ujian</strong>
+      <div class="mode-item">
+        <strong>🎯 Mode Latihan (Feedback Langsung)</strong>
+        <small>Setelah memilih jawaban, kamu langsung melihat apakah benar (✅) atau salah (❌), plus <b>penjelasan singkat (💡)</b> di bawahnya.</small>
+      </div>
+      <div class="mode-item">
+        <strong>📊 Mode Ujian (Hasil di Akhir)</strong>
+        <small>Jawaban <b>tidak</b> diberi feedback selama quiz. Skor dan review muncul setelah semua soal selesai.</small>
+      </div>
+      <div class="mode-item">
+        <strong>⏱️ Countdown 3-2-1-MULAI</strong>
+        <small>Setiap kali kamu memilih mode, akan muncul hitungan mundur <b>3 → 2 → 1 → MULAI</b> sebagai tanda quiz segera dimulai.</small>
+      </div>
+      <div class="mode-item">
+        <strong>📤 Laporan Otomatis</strong>
+        <small>Setelah selesai, nilai akan otomatis dikirim ke Google Sheets dan Email Guru.</small>
+      </div>
+    </div>
+
+    <button class="btn" id="start-normal-btn">🎯 Mode Latihan (Feedback Langsung)</button>
+    <button class="btn secondary" id="start-exam-btn">📊 Mode Ujian (Hasil di Akhir)</button>
+    <button class="btn secondary" id="show-lb-btn">🏆 Lihat Leaderboard</button>
+  </div>
+
+  <div id="quiz-screen" class="hidden">
+    <div class="info-row">
+      <span id="progress-text">Soal 1 / 0</span>
+      <span id="timer-display" class="timer-box">⏱️ 30s</span>
+      <span id="score-text">Skor: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="question" id="question-text"></div>
+    <div class="options" id="options-container"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn" id="next-btn" disabled>Lanjut →</button>
+  </div>
+
+  <div id="result-screen" class="result-screen">
+    <h1>🎉 Selesai!</h1>
+    <div class="score-big" id="final-score">0</div>
+    <p class="result-detail" id="final-detail"></p>
+    <p id="send-status" style="color: #667eea; font-weight: 600; font-size: 0.9em; margin-bottom: 10px;"></p>
+    <div class="review-list" id="review-list"></div>
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn" id="restart-btn">🔄 Ulangi Quiz</button>
+      <button class="btn secondary" id="back-menu-btn">🏠 Menu</button>
+    </div>
+  </div>
+
+  <div id="lb-screen" class="hidden">
+    <h1>🏆 Leaderboard</h1>
+    <p class="subtitle">Top 10 skor terbaik (tersimpan di browser ini)</p>
+    <div id="lb-content"></div>
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn secondary" id="clear-lb-btn">🗑️ Hapus Semua</button>
+      <button class="btn" id="lb-back-btn">🏠 Menu</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====== OVERLAY COUNTDOWN 3-2-1-MULAI ====== -->
+<div id="countdown-overlay" class="countdown-overlay hidden">
+  <div class="countdown-number" id="countdown-number">3</div>
+  <div class="countdown-hint">Bersiap... がんばって！</div>
+</div>
+
+<script>
+// ============================================================
+// ====== KONFIGURASI ======
+// ============================================================
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTp9VixJcHPrxdrzyzmPBX1A4XQB1O8M3a2tqZV7hOa0cqKut1JLyY-T2L9R8LyL3b/exec';
+
+const CONFIG = {
+  minTimePerQuestion: 30,
+  maxTimePerQuestion: 120,
+  timePerQuestion: 0,
+  shuffleQuestions: true,
+  shuffleOptions: false,
+  soundEnabled: true,
+  leaderboardKey: 'irodori_60_leaderboard_v1',
+  maxLeaderboard: 10,
+  examModeDefault: false
+};
+
+let studentName = "";
+let studentClass = "";
+
+// ============================================================
+// ====== LOGIKA SESI (PER LINK) ======
+// ============================================================
+function getSessionInfo() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlSesi = urlParams.get('sesi');
+  if (urlSesi) {
+    return urlSesi.replace(/[^a-zA-Z0-9_\-]/g, ''); 
+  } else {
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+    return `SESI-${dateStr}`;
+  }
+}
+let CURRENT_SESSION = getSessionInfo();
+
+// ============================================================
+// ============================================================
+// ======   AREA INPUT SOAL — SILAKAN ISI DI SINI   ==========
+// ============================================================
+// ============================================================
+
+// --- 1. PASSAGES (bacaan untuk soal dokkai) ---
+const PASSAGES = {
+  P1: `わたしの 名前は マイケルです。アメリカから 来ました。いま、東京の 会社で 働いています。
+私は 毎日 朝 7時に 起きます。うちから 会社まで 電車で 1時間 ぐらい かかります。
+会社は 9時に 始まりますから、いつも 8時半ごろ 着きます。
+夜 うちへ 帰ってから、自炊をして、11時ごろ 寝ます。`,
+
+  P2: `来週の日曜日、クラスの ともだちと いっしょに 日本の お祭りに 行きます。
+場所は 駅の 近くの 公園です。お祭りでは、いろいろな 食べ物の 屋台が 出ます。
+やきそばや たこやきを 食べてみたいです。
+午後 2時に 駅の 改札の 前で 待ち合わせを します。雨が ふらないと いいですね。`
+};
+
+// --- 2. RAW_QUESTIONS (daftar soal) ---
+const RAW_QUESTIONS = [
+  // --- BAGIAN I: PERUBAHAN KATA KERJA & TATA BAHASA (1 - 10) ---
+  { id:1, type:'kotoba_kanji',
+    question:`きょうしつで ごはんを（たべます）…………ください。`,
+    options:{A:`食べないで`, B:`食べなくて`, C:`食べるな`, D:`食べた`}, answer:'A',
+    explanation:`Pola ～ないでください menyatakan larangan ("tolong jangan..."). 食べます → 食べないで.` },
+  { id:2, type:'kotoba_kanji',
+    question:`あしたの かいぎに（きます）…………、じゅんびを おねがいします。`,
+    options:{A:`来る前に`, B:`来たあとで`, C:`来ながら`, D:`来なければ`}, answer:'A',
+    explanation:`V (Bentuk Kamus) + 前に menyatakan kegiatan yang dilakukan sebelum hal lain. 来る = くる.` },
+  { id:3, type:'kotoba_kanji',
+    question:`おふろに（はいります）…………、かみを あらいます。`,
+    options:{A:`入る前に`, B:`入ったあとで`, C:`入りながら`, D:`入らなくて`}, answer:'B',
+    explanation:`V (Bentuk-ta) + あとで menyatakan kegiatan setelah tindakan selesai. 入る → 入った.` },
+  { id:4, type:'kotoba_kanji',
+    question:`あしたは はやく（おきます）…………から、きをつけてください。`,
+    options:{A:`起きなければならない`, B:`起きてもいい`, C:`起きなくてもいい`, D:`起きないで`}, answer:'A',
+    explanation:`～なければならない menyatakan kewajiban/harus. 起きます → 起きなければならない.` },
+  { id:5, type:'kotoba_kanji',
+    question:`ここで 写真を（とります）…………。`,
+    options:{A:`撮ってもいいです`, B:`撮ってはいけない`, C:`撮らなければならない`, D:`撮るつもりです`}, answer:'A',
+    explanation:`V-te + もいいです digunakan untuk meminta/memberi izin (kebolehan).` },
+  { id:6, type:'kotoba_kanji',
+    question:`日本語の じゅぎょうで、たくさん はなし（ます）…………。`,
+    options:{A:`たいです`, B:`たくないです`, C:`たがっています`, D:`たかった`}, answer:'A',
+    explanation:`V-masu (buang ます) + たいです menyatakan keinginan pribadi.` },
+  { id:7, type:'kotoba_kanji',
+    question:`あしたは 時間が あるから、えいがを（みます）…………。`,
+    options:{A:`見るつもりです`, B:`見なければならない`, C:`見てもいいです`, D:`見ないでください`}, answer:'A',
+    explanation:`V (Bentuk Kamus) + つもりです menyatakan rencana/niat yang sudah diputuskan.` },
+  { id:8, type:'kotoba_kanji',
+    question:`りょうりの しごとを（します）………… ことができます。`,
+    options:{A:`する`, B:`した`, C:`して`, D:`しない`}, answer:'A',
+    explanation:`V (Bentuk Kamus) + ことができます menyatakan kemampuan/potensi.` },
+  { id:9, type:'kotoba_kanji',
+    question:`あめが ふって（います）…………から、かさを もっていってください。`,
+    options:{A:`いる`, B:`いた`, C:`いません`, D:`いく`}, answer:'A',
+    explanation:`V-te + います menunjukkan tindakan/keadaan yang sedang berlangsung (sedang turun hujan).` },
+  { id:10, type:'kotoba_kanji',
+    question:`かばんを なくして、（こまります）…………。`,
+    options:{A:`困っています`, B:`困ります`, C:`困った`, D:`困ろう`}, answer:'A',
+    explanation:`Menyatakan keadaan/hasil perubahan yang masih berlanjut: V-te + います. 困る → 困っています.` },
+
+  // --- BAGIAN II: MELANJUTKAN PERCAKAPAN / HYOUGEN (11 - 20) ---
+  { id:11, type:'hyougen',
+    question:`A: もしもし、田中さんのお宅ですか。\nB: はい、（ ……………………………… ）。`,
+    options:{A:`そうです`, B:`ちがいます`, C:`いってきます`, D:`おかえりなさい`}, answer:'A',
+    explanation:`Ungkapan konfirmasi standar saat menelepon ke rumah seseorang ("Ya, benar").` },
+  { id:12, type:'hyougen',
+    question:`A: きのうは どうもありがとうございました。\nB: （ ……………………………… ）。`,
+    options:{A:`いいえ、どういたしまして`, B:`いってらっしゃい`, C:`お疲れ様でした`, D:`いただきます`}, answer:'A',
+    explanation:`Tanggapan standar yang sopan saat seseorang mengucapkan terima kasih.` },
+  { id:13, type:'hyougen',
+    question:`（Di rumah/kantor saat baru tiba）\nA: ただいま戻りました。\nB: （ ……………………………… ）。`,
+    options:{A:`お帰りなさい`, B:`行ってきます`, C:`お疲れ様でした`, D:`どういたしまして`}, answer:'A',
+    explanation:`Ungkapan penyambutan wajib kepada orang yang baru pulang/kembali.` },
+  { id:14, type:'hyougen',
+    question:`（Menjelang jam pulang kerja）\nA: お先に失礼します。\nB: （ ……………………………… ）。`,
+    options:{A:`お疲れ様でした`, B:`いってきます`, C:`ただいま`, D:`どういたしまして`}, answer:'A',
+    explanation:`Ungkapan apresiasi dan salam perpisahan standar kepada rekan kerja.` },
+  { id:15, type:'hyougen',
+    question:`A: すみません、この漢字の 読み方を 教えてください。\nB: はい、いいですよ。（ ……………………………… ）。`,
+    options:{A:`どうぞ`, B:`だめです`, C:`しりません`, D:`わかりません`}, answer:'A',
+    explanation:`Ungkapan mempersilakan orang lain saat mengabulkan permintaannya.` },
+  { id:16, type:'hyougen',
+    question:`（Restoran menyajikan pesanan makanan）\nPelayan: お待たせいたしました。（ ……………………………… ）。`,
+    options:{A:`どうぞ召し上がってください`, B:`いってきます`, C:`ごちそうさまでした`, D:`ただいま`}, answer:'A',
+    explanation:`Ungkapan pelayanan agar pelanggan silakan menikmati makanannya.` },
+  { id:17, type:'hyougen',
+    question:`A: あ、さいふを わすれました！\nB: え！（ ……………………………… ）。`,
+    options:{A:`大変ですね`, B:`よかったですね`, C:`おめでとうございます`, D:`すごいですね`}, answer:'A',
+    explanation:`Ungkapan empati/perhatian terhadap situasi sulit yang dialami orang lain.` },
+  { id:18, type:'hyougen',
+    question:`A: あした、いっしょに 映画を 見ませんか。\nB: （ ……………………………… ）、ぜひ お願いします。`,
+    options:{A:`いいですね`, B:`ちょっと…`, C:`だめです`, D:`わかりません`}, answer:'A',
+    explanation:`Ungkapan antusiasme yang umum digunakan untuk menerima ajakan.` },
+  { id:19, type:'hyougen',
+    question:`A: すみません、きょうは ちょっと…（Menolak halus）\nB: ああ、（ ……………………………… ）。またこんどですね。`,
+    options:{A:`わかりました`, B:`いいですね`, C:`ぜひお願いします`, D:`おめでとう`}, answer:'A',
+    explanation:`Ungkapan memahami situasi saat ajakan ditolak secara halus.` },
+  { id:20, type:'hyougen',
+    question:`A: これ、ほんの きもちです。どうぞ。\nB: わあ、ありがとうございます。（ ……………………………… ） いただきます。`,
+    options:{A:`遠慮なく`, B:`むりに`, C:`すこし`, D:`きゅうに`}, answer:'A',
+    explanation:`Ungkapan sopan saat menerima pemberian/oleh-oleh ("Tanpa canggung").` },
+
+  // --- BAGIAN III: DOKKAI / PEMAHAMAN BACAAN (21 - 30) ---
+  { id:21, type:'dokkai', passageId:'P1',
+    question:`マイケルさんは どこの 国から 来ましたか。`,
+    options:{A:`アメリカ`, B:`イギリス`, C:`日本`, D:`フランス`}, answer:'A',
+    explanation:`Teks: 「アメリカから 来ました」.` },
+  { id:22, type:'dokkai', passageId:'P1',
+    question:`マイケルさんは いま どこで 働いていますか。`,
+    options:{A:`東京の会社`, B:`アメリカの学校`, C:`大阪の病院`, D:`京都の銀行`}, answer:'A',
+    explanation:`Teks: 「いま、東京の 会社で 働いています」.` },
+  { id:23, type:'dokkai', passageId:'P1',
+    question:`マイケルさんは 毎朝 何時に 起きますか。`,
+    options:{A:`朝 7時`, B:`朝 6時`, C:`朝 8時`, D:`朝 9時`}, answer:'A',
+    explanation:`Teks: 「毎日 朝 7時に 起きます」.` },
+  { id:24, type:'dokkai', passageId:'P1',
+    question:`会社は 何時に始まりますか。`,
+    options:{A:`9時`, B:`8時`, C:`10時`, D:`5時`}, answer:'A',
+    explanation:`Teks: 「会社は 9時に 始まりますから」.` },
+  { id:25, type:'dokkai', passageId:'P1',
+    question:`マイケルさんは 夜 何時ごろ 寝ますか。`,
+    options:{A:`11時ごろ`, B:`9時ごろ`, C:`7時ごろ`, D:`12時ごろ`}, answer:'A',
+    explanation:`Teks: 「11時ごろ 寝ます」.` },
+  { id:26, type:'dokkai', passageId:'P2',
+    question:`マイケルさんたちは いつ お祭りに行きますか。`,
+    options:{A:`来週の日曜日`, B:`今週の土曜日`, C:`きょう`, D:`あした`}, answer:'A',
+    explanation:`Teks: 「来週の日曜日、…お祭りに 行きます」.` },
+  { id:27, type:'dokkai', passageId:'P2',
+    question:`お祭りは どこで 開催されますか。`,
+    options:{A:`駅の 近くの 公園`, B:`スーパーの前`, C:`学校の中`, D:`会社の近くだけ`}, answer:'A',
+    explanation:`Teks: 「場所は 駅の 近くの 公園です」.` },
+  { id:28, type:'dokkai', passageId:'P2',
+    question:`お祭りには 何が 出ますか。`,
+    options:{A:`食べ物の屋台`, B:`くるまのレース`, C:`洋服の店`, D:`本屋`}, answer:'A',
+    explanation:`Teks: 「いろいろな 食べ物の 屋台が 出ます」.` },
+  { id:29, type:'dokkai', passageId:'P2',
+    question:`マイケルさんは 何を 食べてみたいですか。`,
+    options:{A:`やきそばや たこやき`, B:`すしや さしみ`, C:`ラーメンや ぎょうざ`, D:`パンや サンドイッチ`}, answer:'A',
+    explanation:`Teks: 「やきそばや たこやきを 食べてみたいです」.` },
+  { id:30, type:'dokkai', passageId:'P2',
+    question:`午後 2時に どこで 待ち合わせを しますか。`,
+    options:{A:`駅の改札の前`, B:`公園の入り口`, C:`会社のロビー`, D:`スーパーのレジ`}, answer:'A',
+    explanation:`Teks: 「午後 2時に 駅の 改札の 前で 待ち合わせを します」.` },
+
+  // --- BAGIAN IV: SOAL TAMBAHAN IRODORI (31 - 60) ---
+  { id:31, type:'kotoba_kanji',
+    question:`道に迷って、ちょっと遅れます。\n\nApa arti ungkapan「遅れます」?`,
+    options:{A:`Saya akan terlambat`, B:`Saya akan datang lebih awal`, C:`Saya tersesat`, D:`Saya akan pulang`}, answer:'A',
+    explanation:`遅れます dari 遅れる (okureru) = "terlambat".` },
+  { id:32, type:'hyougen',
+    question:`（会社で）少し熱があるので、早退してもいいですか。\n\nUngkapan ini digunakan untuk…`,
+    options:{A:`Meminta izin pulang lebih awal`, B:`Menyuruh atasan pulang`, C:`Melaporkan sembuh`, D:`Menanyakan jam pulang`}, answer:'A',
+    explanation:`早退 (soutai) = "pulang lebih awal". ～てもいいですか = meminta izin.` },
+  { id:33, type:'kotoba_kanji',
+    question:`昨日から38度の熱があって、のどがすごく痛いんです。\n\nUngkapan「～んです」berfungsi untuk…`,
+    options:{A:`Menjelaskan alasan/keadaan`, B:`Menyatakan larangan`, C:`Menyatakan keinginan`, D:`Mengajak seseorang`}, answer:'A',
+    explanation:`Pola ～んです memberikan penjelasan atau alasan atas suatu situasi.` },
+  { id:34, type:'dokkai', passageId:null,
+    question:`この薬は、痛くてがまんできないときに飲んでください。\n\nApa makna kalimat petunjuk minum obat tersebut?`,
+    options:{A:`Minum obat hanya jika rasa sakit tak tertahankan`, B:`Minum obat setiap saat`, C:`Jangan minum obat`, D:`Minum obat sebelum tidur`}, answer:'A',
+    explanation:`がまんできない = "tidak bisa menahan". ～ときに = "pada saat…".` },
+  { id:35, type:'kotoba_kanji',
+    question:`もしもし、今、駅に着きました。じゃあ、改札の前で待ってます。\n\n「待ってます」merupakan bentuk kasual dari…`,
+    options:{A:`待っています`, B:`待ってもいいです`, C:`待ってください`, D:`待たないで`}, answer:'A',
+    explanation:`待ってます adalah kontraksi dari 待っています (sedang menunggu).` },
+  { id:36, type:'kotoba_kanji',
+    question:`来週は仕事を休んで、できるだけ人に会わないでください。\n\n「～ないでください」menyatakan…`,
+    options:{A:`Larangan/permintaan untuk tidak melakukan`, B:`Ajakan melakukan sesuatu`, C:`Keinginan pribadi`, D:`Pengalaman`}, answer:'A',
+    explanation:`～ないでください = meminta seseorang tidak melakukan sesuatu.` },
+  { id:37, type:'kotoba_kanji',
+    question:`よく眠れないときは、ぬるいお風呂にゆっくり入るといいですよ。\n\n「～といいですよ」digunakan untuk…`,
+    options:{A:`Memberi saran`, B:`Menyatakan larangan`, C:`Menanyakan pendapat`, D:`Kemampuan`}, answer:'A',
+    explanation:`V-るといいですよ = memberikan saran.` },
+  { id:38, type:'hyougen',
+    question:`明日の待ち合わせ、駅の改札でもいいですか。いいですよ。\n\n「～でもいいですか」digunakan untuk…`,
+    options:{A:`Menanyakan apakah suatu alternatif diperbolehkan`, B:`Menolak ajakan`, C:`Menyatakan kepastian`, D:`Meminta maaf`}, answer:'A',
+    explanation:`～でもいいですか = "apakah … juga boleh?" untuk mengusulkan alternatif.` },
+  { id:39, type:'kotoba_kanji',
+    question:`事故で電車が止まりました。\n\nPartikel「で」pada kalimat tersebut menunjukkan…`,
+    options:{A:`Penyebab/alasan`, B:`Tempat aktivitas`, C:`Alat`, D:`Batas waktu`}, answer:'A',
+    explanation:`N で diikuti kata peristiwa seperti 事故 (kecelakaan) menunjukkan penyebab.` },
+  { id:40, type:'hyougen',
+    question:`成人の日は、何をするんですか。\n\n「～んですか」berfungsi untuk…`,
+    options:{A:`Menanyakan penjelasan/konteks lebih lanjut`, B:`Menyatakan keheranan`, C:`Melarang`, D:`Mengajak`}, answer:'A',
+    explanation:`～んですか = meminta penjelasan lebih detail.` },
+  { id:41, type:'kotoba_kanji',
+    question:`甥や姪にお年玉をあげなくちゃならないし、大変でした。\n\n「～なくちゃならない」semakna dengan…`,
+    options:{A:`～なければならない`, B:`～てもいい`, C:`～てはいけない`, D:`～なくてもいい`}, answer:'A',
+    explanation:`～なくちゃならない = bentuk percakapan dari ～なければならない ("harus").` },
+  { id:42, type:'kotoba_kanji',
+    question:`ソンクラーンは、町を歩きながら、みんなで水をかけ合います。\n\n「～ながら」menunjukkan bahwa dua tindakan dilakukan…`,
+    options:{A:`Secara bersamaan`, B:`Secara bergantian`, C:`Setelah selesai`, D:`Karena terpaksa`}, answer:'A',
+    explanation:`V-ながら = dua aktivitas dilakukan bersamaan oleh subjek yang sama.` },
+  { id:43, type:'kotoba_kanji',
+    question:`返却は、市内の図書館なら、どこに返してもいいです。\n\nArti dari「～てもいい」adalah…`,
+    options:{A:`Boleh mengembalikan di mana saja (syarat tertentu)`, B:`Tidak perlu`, C:`Harus di tempat tertentu`, D:`Dilarang`}, answer:'A',
+    explanation:`～てもいい = menyatakan izin/kebolehan.` },
+  { id:44, type:'hyougen',
+    question:`前髪は、もう少し短く切ってもらえますか。\n\n「～てもらえますか」digunakan untuk…`,
+    options:{A:`Meminta orang lain melakukan sesuatu untuk kita`, B:`Kemampuan diri`, C:`Memberi izin`, D:`Larangan`}, answer:'A',
+    explanation:`V-てもらえますか = permintaan sopan agar orang lain melakukan sesuatu.` },
+  { id:45, type:'hyougen',
+    question:`お次の方、どうぞ。お願いします。\n\n「お次の方」digunakan staf untuk memanggil…`,
+    options:{A:`Pelanggan berikutnya`, B:`Orang terlambat`, C:`Karyawan baru`, D:`Teman`}, answer:'A',
+    explanation:`お次の方 = bentuk sopan untuk memanggil "orang berikutnya".` },
+  { id:46, type:'kotoba_kanji',
+    question:`外国の方のために、いろいろなサービスがあります。\n\n「～のために」menyatakan…`,
+    options:{A:`Tujuan/manfaat untuk pihak lain`, B:`Larangan`, C:`Pengalaman`, D:`Ajakan`}, answer:'A',
+    explanation:`N のために = "untuk/demi (seseorang/sesuatu)".` },
+  { id:47, type:'kotoba_kanji',
+    question:`道を歩いているとき、リスを見ました。\n\n「～とき」menunjukkan…`,
+    options:{A:`Waktu terjadinya suatu tindakan`, B:`Tempat`, C:`Alasan`, D:`Cara`}, answer:'A',
+    explanation:`V-ているとき = "ketika sedang melakukan…".` },
+  { id:48, type:'kotoba_kanji',
+    question:`薬を飲んだあと、運転しないでくださいね。\n\n「～たあと」menunjukkan urutan bahwa…`,
+    options:{A:`Setelah minum obat, jangan mengemudi`, B:`Mengemudi sebelum obat`, C:`Obat setelah mengemudi`, D:`Sebelum minum obat`}, answer:'A',
+    explanation:`V-たあと = "setelah melakukan…".` },
+  { id:49, type:'hyougen',
+    question:`お会計、825円になります。\n\n「～になります」dalam konteks kasir digunakan untuk…`,
+    options:{A:`Menyebutkan total harga secara sopan`, B:`Perubahan keadaan`, C:`Metode pembayaran`, D:`Diskon`}, answer:'A',
+    explanation:`Dalam pelayanan, ～になります adalah bentuk sopan untuk menyebutkan total harga.` },
+  { id:50, type:'hyougen',
+    question:`クリーニングはいつできますか。明日の午後になります。\n\nMakna jawaban tersebut adalah…`,
+    options:{A:`Layanan akan selesai pada waktu tersebut`, B:`Barang jadi mahal`, C:`Toko tutup`, D:`Bayar besok`}, answer:'A',
+    explanation:`～になります = menyampaikan informasi waktu selesai secara sopan.` },
+  { id:51, type:'kotoba_kanji',
+    question:`父\n\nApa arti kanji tersebut?`,
+    options:{A:`Ayah`, B:`Ibu`, C:`Kakak`, D:`Kakek`}, answer:'A',
+    explanation:`Kanji 父 dibaca ちち (chichi) = "ayah".` },
+  { id:52, type:'kotoba_kanji',
+    question:`魚\n\nCara baca kanji tersebut adalah…`,
+    options:{A:`さかな`, B:`にく`, C:`みず`, D:`こども`}, answer:'A',
+    explanation:`魚 dibaca さかな (sakana) = "ikan".` },
+  { id:53, type:'kotoba_kanji',
+    question:`新しい\n\nArti kanji 新 adalah…`,
+    options:{A:`Baru`, B:`Lama`, C:`Mahal`, D:`Murah`}, answer:'A',
+    explanation:`新しい (あたらしい) = "baru".` },
+  { id:54, type:'kotoba_kanji',
+    question:`お風呂\n\nApa arti kata tersebut?`,
+    options:{A:`Kamar mandi / air panas`, B:`Dapur`, C:`Toilet`, D:`Kamar tidur`}, answer:'A',
+    explanation:`お風呂 (ofuro) = "bak mandi" atau "air panas untuk mandi".` },
+  { id:55, type:'kotoba_kanji',
+    question:`台所\n\nKata tersebut merujuk pada…`,
+    options:{A:`Dapur`, B:`Ruang tamu`, C:`Garasi`, D:`Gudang`}, answer:'A',
+    explanation:`台所 (だいどころ) = "dapur".` },
+  { id:56, type:'kotoba_kanji',
+    question:`玄関\n\nArea di rumah Jepang ini berfungsi sebagai…`,
+    options:{A:`Tempat masuk / area melepas sepatu`, B:`Tempat tidur`, C:`Tempat menjemur`, D:`Ruang makan`}, answer:'A',
+    explanation:`玄関 (げんかん) = area pintu masuk tempat melepas sepatu.` },
+  { id:57, type:'kotoba_kanji',
+    question:`熱\n\nDalam konteks medis (熱があります), artinya…`,
+    options:{A:`Demam`, B:`Batuk`, C:`Sakit kepala`, D:`Pusing`}, answer:'A',
+    explanation:`熱 (ねつ) = "demam/panas".` },
+  { id:58, type:'kotoba_kanji',
+    question:`病院\n\nCara baca kanji tersebut adalah…`,
+    options:{A:`びょういん`, B:`びよういん`, C:`ぴょういん`, D:`びょうき`}, answer:'A',
+    explanation:`病院 dibaca びょういん (byouin) = rumah sakit.` },
+  { id:59, type:'kotoba_kanji',
+    question:`薬\n\nApa arti kanji tersebut?`,
+    options:{A:`Obat`, B:`Makanan`, C:`Minuman`, D:`Vitamin`}, answer:'A',
+    explanation:`薬 dibaca くすり (kusuri) = "obat".` },
+  { id:60, type:'kotoba_kanji',
+    question:`医者\n\nArti kata tersebut adalah…`,
+    options:{A:`Dokter`, B:`Perawat`, C:`Apoteker`, D:`Pasien`}, answer:'A',
+    explanation:`医者 (いしゃ) = "dokter".` }
+];
+
+// ============================================================
+// ===== MAPPING OTOMATIS → FORMAT INTERNAL SISTEM ==========
+// ============================================================
+const QUESTIONS = RAW_QUESTIONS.map(rq => {
+  const OPT_KEYS = ['A','B','C','D'];
+  const options = OPT_KEYS.map(k => rq.options[k]);
+  const ansIdx = OPT_KEYS.indexOf(rq.answer);
+  let qText = rq.question;
+  let t = rq.t;
+
+  if (rq.passageId && PASSAGES[rq.passageId]) {
+    const passLen = PASSAGES[rq.passageId].length;
+    qText = `【読解 ${rq.passageId}】\n${PASSAGES[rq.passageId]}\n\n■ 質問：${rq.question}`;
+    if (!t) t = Math.min(120, 60 + Math.ceil(passLen / 5));
+  } else if (rq.type === 'hyougen') {
+    if (!t) t = 60;
+  }
+  return { q: qText, o: options, a: ansIdx, p: rq.explanation, t };
+});
+
+// ============================================================
+// ====== IDENTITAS UJIAN ======
+// ============================================================
+const EXAM_CONFIG = { idManual: '', namaManual: '' };
+
+function generateExamFingerprint() {
+  const str = JSON.stringify(QUESTIONS.map(q => ({ q: q.q, o: q.o, a: q.a })));
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return 'UJIAN-' + Math.abs(hash).toString(36).toUpperCase();
+}
+
+function getExamInfo() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlUjian = urlParams.get('ujian');
+  const urlNama = urlParams.get('nama');
+  if (urlUjian) {
+    return { id: urlUjian.replace(/[^a-zA-Z0-9_\-]/g, ''), nama: urlNama || urlUjian, auto: false };
+  }
+  if (EXAM_CONFIG.idManual) {
+    return { id: EXAM_CONFIG.idManual, nama: EXAM_CONFIG.namaManual || EXAM_CONFIG.idManual, auto: false };
+  }
+  const fp = generateExamFingerprint();
+  return { id: fp, nama: `Ujian ${fp.replace('UJIAN-', '')}`, auto: true };
+}
+let CURRENT_EXAM = getExamInfo();
+
+function updateSessionUI() {
+  document.getElementById('session-id-display').textContent = CURRENT_SESSION;
+  const box = document.querySelector('.session-box');
+  if (box && !document.getElementById('exam-info-display')) {
+    const div = document.createElement('div');
+    div.id = 'exam-info-display';
+    div.style.cssText = 'margin-top:10px;padding-top:10px;border-top:1px dashed #dde1ff;font-size:0.85em;color:#555;';
+    div.innerHTML = `📝 Ujian: <strong style="color:#667eea;">${CURRENT_EXAM.nama}</strong><br>
+      <span style="font-size:0.9em;color:#888;">ID: <code>${CURRENT_EXAM.id}</code>
+      ${CURRENT_EXAM.auto ? '(otomatis dari soal)' : '(manual)'}</span>`;
+    box.appendChild(div);
+  }
+}
+
+function copySessionLink() {
+  const url = new URL(window.location.href);
+  url.searchParams.set('sesi', CURRENT_SESSION);
+  url.searchParams.set('ujian', CURRENT_EXAM.id);
+  url.searchParams.set('nama', CURRENT_EXAM.nama);
+  const link = url.toString();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(() => {
+      alert('✅ Link Ujian Berhasil Disalin!\n\n📝 Ujian: ' + CURRENT_EXAM.nama
+        + '\n🗂️ ID: ' + CURRENT_EXAM.id
+        + '\n🔗 Sesi: ' + CURRENT_SESSION
+        + '\n\nLink:\n' + link);
+    }).catch(() => prompt('Salin link ini secara manual:', link));
+  } else {
+    prompt('Salin link ini secara manual:', link);
+  }
+}
+
+// ============================================================
+// ====== LOGIKA QUIZ ======
+// ============================================================
+const LABELS = ['A','B','C','D'];
+let current = 0, score = 0, answered = false;
+let order = [], userAnswers = [], examMode = false;
+let timerInterval = null, timeLeft = 0;
+let currentQ = null;
+
+function getQuestionTime(q) {
+  if (q.t && q.t > 0) return Math.max(CONFIG.minTimePerQuestion, q.t);
+  if (CONFIG.timePerQuestion > 0) return CONFIG.timePerQuestion;
+  const qLen = (q.q || '').length;
+  const oLen = (q.o || []).reduce((s, o) => s + (o || '').length, 0);
+  const totalLen = qLen + oLen;
+  const extra = Math.max(0, Math.ceil((totalLen - 80) / 20));
+  return Math.min(CONFIG.minTimePerQuestion + extra, CONFIG.maxTimePerQuestion);
+}
+
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { audioCtx = null; }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+}
+function playTone(freq, duration, type='sine', vol=0.15) {
+  if (!CONFIG.soundEnabled || !audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+function soundCorrect() { initAudio(); playTone(660,0.12,'sine'); setTimeout(()=>playTone(880,0.18,'sine'),110); }
+function soundWrong()   { initAudio(); playTone(220,0.25,'sawtooth',0.12); }
+function soundTick()    { if (!CONFIG.soundEnabled || !audioCtx) return; playTone(1000,0.05,'square',0.05); }
+function soundCountdownBeep() { playTone(560, 0.14, 'sine', 0.13); }
+function soundCountdownGo() {
+  playTone(880, 0.15, 'sine', 0.16);
+  setTimeout(() => playTone(1180, 0.18, 'sine', 0.16), 120);
+  setTimeout(() => playTone(1480, 0.30, 'sine', 0.14), 250);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(id) {
+  ['menu-screen','quiz-screen','result-screen','lb-screen'].forEach(s => {
+    document.getElementById(s).classList.add('hidden');
+    document.getElementById(s).classList.remove('show');
+  });
+  document.getElementById(id).classList.remove('hidden');
+  if (id === 'result-screen') document.getElementById(id).classList.add('show');
+}
+
+// ============================================================
+// ====== COUNTDOWN 3 → 2 → 1 → MULAI ======
+// ============================================================
+let countdownActive = false;
+
+function runCountdown(onFinish) {
+  const overlay = document.getElementById('countdown-overlay');
+  const numEl   = document.getElementById('countdown-number');
+
+  if (!overlay || !numEl) {
+    if (typeof onFinish === 'function') onFinish();
+    return;
+  }
+
+  countdownActive = true;
+  const steps     = ['3', '2', '1', 'MULAI'];
+  const durations = [800, 800, 800, 950];
+
+  overlay.classList.remove('hidden');
+  let idx = 0;
+  function showStep() {
+    if (idx >= steps.length) {
+      overlay.classList.add('hidden');
+      countdownActive = false;
+      if (typeof onFinish === 'function') onFinish();
+      return;
+    }
+    const val = steps[idx];
+    numEl.textContent = val;
+    numEl.classList.toggle('word', val === 'MULAI');
+    numEl.classList.remove('pop');
+    void numEl.offsetWidth;
+    numEl.classList.add('pop');
+
+    if (val === 'MULAI') soundCountdownGo();
+    else                 soundCountdownBeep();
+
+    const wait = durations[idx];
+    idx++;
+    setTimeout(showStep, wait);
+  }
+  showStep();
+}
+
+// ============================================================
+// ====== START QUIZ (TRIGGER COUNTDOWN) ======
+// ============================================================
+function startQuiz(isExam) {
+  if (countdownActive) return;
+
+  studentName  = document.getElementById('student-name').value.trim();
+  studentClass = document.getElementById('student-class').value.trim();
+
+  if (!studentName || !studentClass) {
+    alert("Mohon isi Nama dan Kelas terlebih dahulu!");
+    return;
+  }
+  if (QUESTIONS.length === 0) {
+    alert('Belum ada soal.');
+    return;
+  }
+
+  initAudio();
+  examMode = isExam;
+  current = 0; score = 0; answered = false;
+  userAnswers = [];
+  order = CONFIG.shuffleQuestions
+    ? shuffle(QUESTIONS.map((_, i) => i))
+    : QUESTIONS.map((_, i) => i);
+
+  showScreen('quiz-screen');
+  runCountdown(() => {
+    renderQuestion();
+  });
+}
+
+function renderQuestion() {
+  answered = false;
+  const qIdx = order[current];
+  let q = QUESTIONS[qIdx];
+  let options = q.o.slice();
+  let correct = q.a;
+
+  if (CONFIG.shuffleOptions) {
+    const pairs = options.map((opt, i) => ({ opt, isCorrect: i === correct }));
+    const shuffled = shuffle(pairs);
+    options = shuffled.map(p => p.opt);
+    correct = shuffled.findIndex(p => p.isCorrect);
+  }
+
+  q = { ...q, o: options, a: correct };
+  currentQ = q;
+
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('progress-text').textContent = `Soal ${current + 1} / ${order.length}`;
+  document.getElementById('score-text').textContent = `Skor: ${score}`;
+  document.getElementById('progress-fill').style.width = `${(current / order.length) * 100}%`;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  q.o.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="label">${LABELS[i]}.</span> <span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i, q);
+    container.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('next-btn').textContent = current === order.length - 1 ? 'Lihat Hasil →' : 'Lanjut →';
+
+  startTimer(q);
+}
+
+function startTimer(q) {
+  clearInterval(timerInterval);
+  const timerEl = document.getElementById('timer-display');
+  const total = getQuestionTime(q);
+  if (total <= 0) { timerEl.style.display = 'none'; return; }
+  timerEl.style.display = 'inline-block';
+  timeLeft = total;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 5 && timeLeft > 0) soundTick();
+    if (timeLeft <= 0) { clearInterval(timerInterval); timeOut(); }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const el = document.getElementById('timer-display');
+  el.textContent = `⏱️ ${timeLeft}s`;
+  el.classList.toggle('warning', timeLeft <= 5);
+}
+
+function timeOut() {
+  if (answered) return;
+  answered = true;
+  const q = currentQ;
+  const qIdx = order[current];
+  userAnswers.push({ qIdx, selected: -1, correct: q.a, isCorrect: false, timedOut: true });
+
+  document.querySelectorAll('.option').forEach((el, i) => {
+    el.classList.add('disabled');
+    if (i === q.a) el.classList.add('correct');
+  });
+
+  if (!examMode) {
+    soundWrong();
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `⏰ Waktu habis! Jawaban benar: <b>${LABELS[q.a]}. ${q.o[q.a]}</b>${q.p ? `<small>💡 ${q.p}</small>` : ''}`;
+  }
+  document.getElementById('next-btn').disabled = false;
+  document.getElementById('score-text').textContent = `Skor: ${score}`;
+}
+
+function selectAnswer(selected, q) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const qIdx = order[current];
+  const correct = q.a;
+  const options = document.querySelectorAll('.option');
+
+  if (examMode) {
+    options.forEach((el, i) => {
+      el.classList.add('disabled');
+      if (i === selected) el.classList.add('selected');
+    });
+    if (selected === correct) score++;
+    userAnswers.push({ qIdx, selected, correct, isCorrect: selected === correct });
+  } else {
+    options.forEach((el, i) => {
+      el.classList.add('disabled');
+      if (i === correct) el.classList.add('correct');
+      if (i === selected && i !== correct) el.classList.add('wrong');
+    });
+    const isCorrect = selected === correct;
+    if (isCorrect) { score++; soundCorrect(); } else soundWrong();
+    userAnswers.push({ qIdx, selected, correct, isCorrect });
+
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback show ' + (isCorrect ? 'correct' : 'wrong');
+    fb.innerHTML = isCorrect
+      ? `✅ Benar!${q.p ? `<small>💡 ${q.p}</small>` : ''}`
+      : `❌ Salah. Jawaban benar: <b>${LABELS[correct]}. ${q.o[correct]}</b>${q.p ? `<small>💡 ${q.p}</small>` : ''}`;
+  }
+
+  document.getElementById('score-text').textContent = `Skor: ${score}`;
+  document.getElementById('next-btn').disabled = false;
+}
+
+document.getElementById('next-btn').onclick = () => {
+  current++;
+  if (current >= order.length) showResult();
+  else renderQuestion();
+};
+
+function showResult() {
+  clearInterval(timerInterval);
+  showScreen('result-screen');
+  const pct = Math.round((score / order.length) * 100);
+  document.getElementById('final-score').textContent = `${score} / ${order.length}`;
+  let msg = '';
+  if (pct >= 90) msg = '🌟 Luar biasa! Pemahaman kamu sangat bagus!';
+  else if (pct >= 70) msg = '👍 Bagus! Sedikit lagi sempurna.';
+  else if (pct >= 50) msg = '💪 Cukup baik. Terus berlatih!';
+  else msg = '📚 Jangan menyerah. Ulangi dan pelajari lagi!';
+
+  document.getElementById('final-detail').innerHTML =
+    `${pct}% benar<br>${msg}<br><small style="color:#999;">Sesi: ${CURRENT_SESSION} | Mode: ${examMode ? 'Ujian' : 'Latihan'} | Siswa: ${studentName} (${studentClass})</small>`;
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '<h3 style="margin-bottom:10px;color:#333;">Review Jawaban &amp; Penjelasan:</h3>';
+  let wrongNumbers = [];
+  userAnswers.forEach((ua, i) => {
+    const q = QUESTIONS[ua.qIdx];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (ua.isCorrect ? 'correct' : 'wrong');
+    const yourAns = ua.selected === -1
+      ? '<span class="no">(tidak dijawab / waktu habis)</span>'
+      : `<span class="${ua.isCorrect ? 'ok' : 'no'}">${LABELS[ua.selected]}. ${q.o[ua.selected]}</span>`;
+    if (!ua.isCorrect) wrongNumbers.push(i + 1);
+    div.innerHTML = `
+      <div class="review-q">${i + 1}. ${q.q}</div>
+      <div class="review-a">
+        Jawabanmu: ${yourAns}
+        ${!ua.isCorrect ? ` | Benar: <span class="ok">${LABELS[ua.correct]}. ${q.o[ua.correct]}</span>` : ''}
+      </div>
+      ${q.p ? `<div class="review-p">💡 ${q.p}</div>` : ''}`;
+    list.appendChild(div);
+  });
+
+  saveToLeaderboard(score, order.length);
+  sendReportToGoogleSheets(score, order.length, pct, wrongNumbers.join(', '));
+}
+
+// ============================================================
+// ====== KIRIM KE GOOGLE SHEETS ======
+// ============================================================
+function sendReportToGoogleSheets(score, total, pct, wrongNumbers) {
+  const statusEl = document.getElementById('send-status');
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'URL_HASIL_DEPLOY_ANDA_DISINI') {
+    statusEl.textContent = "⚠️ Peringatan: URL Google Apps Script belum diatur.";
+    statusEl.style.color = "red";
+    return;
+  }
+  statusEl.textContent = "⏳ Mengirim laporan ke Google Sheets dan Email...";
+  statusEl.style.color = "#667eea";
+
+  const now = new Date();
+  const attemptId = 'ATT-' + now.getTime() + '-' + Math.random().toString(36).substring(2, 6);
+  const payload = {
+    sesi: CURRENT_SESSION,
+    ujianId: CURRENT_EXAM.id,
+    ujianNama: CURRENT_EXAM.nama,
+    attemptId,
+    tanggal: now.toLocaleDateString('id-ID'),
+    waktu: now.toLocaleTimeString('id-ID'),
+    nama: studentName,
+    kelas: studentClass,
+    kategori: "Irodori Pink & Kuning",
+    mode: examMode ? "Ujian" : "Latihan",
+    skor: score, total, persentase: pct,
+    detailSalah: wrongNumbers || "Tidak ada"
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    statusEl.innerHTML = "✅ Laporan berhasil dikirim ke Google Sheets dan Email Guru!";
+    statusEl.style.color = "#28a745";
+  })
+  .catch((error) => {
+    console.error('Error!', error);
+    statusEl.textContent = "❌ Gagal mengirim laporan. Periksa koneksi internet.";
+    statusEl.style.color = "red";
+  });
+}
+
+function getLeaderboard() {
+  try { return JSON.parse(localStorage.getItem(CONFIG.leaderboardKey)) || []; }
+  catch(e) { return []; }
+}
+function saveToLeaderboard(sc, total) {
+  const entry = {
+    score: sc, total,
+    pct: Math.round((sc / total) * 100),
+    mode: examMode ? 'Ujian' : 'Latihan',
+    date: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })
+  };
+  const lb = getLeaderboard();
+  lb.push(entry);
+  lb.sort((a, b) => b.pct - a.pct || b.score - a.score);
+  localStorage.setItem(CONFIG.leaderboardKey, JSON.stringify(lb.slice(0, CONFIG.maxLeaderboard)));
+}
+function renderLeaderboard() {
+  const lb = getLeaderboard();
+  const content = document.getElementById('lb-content');
+  if (lb.length === 0) {
+    content.innerHTML = '<p class="lb-empty">Belum ada skor tersimpan.<br>Selesaikan quiz dulu untuk masuk leaderboard!</p>';
+    return;
+  }
+  let html = '<table class="lb-table"><thead><tr><th>#</th><th>Skor</th><th>%</th><th>Mode</th><th>Tanggal</th></tr></thead><tbody>';
+  lb.forEach((e, i) => {
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+    html += `<tr><td>${medal}</td><td>${e.score}/${e.total}</td><td>${e.pct}%</td><td>${e.mode}</td><td>${e.date}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  content.innerHTML = html;
+}
+
+// ============================================================
+// ====== EVENT BINDING ======
+// ============================================================
+document.getElementById('copy-session-btn').addEventListener('click', copySessionLink);
+document.getElementById('start-normal-btn').onclick = () => startQuiz(false);
+document.getElementById('start-exam-btn').onclick   = () => startQuiz(true);
+document.getElementById('restart-btn').onclick      = () => startQuiz(examMode);
+document.getElementById('back-menu-btn').onclick    = () => showScreen('menu-screen');
+document.getElementById('show-lb-btn').onclick      = () => { renderLeaderboard(); showScreen('lb-screen'); };
+document.getElementById('lb-back-btn').onclick      = () => showScreen('menu-screen');
+document.getElementById('clear-lb-btn').onclick     = () => {
+  if (confirm('Hapus semua skor di leaderboard?')) {
+    localStorage.removeItem(CONFIG.leaderboardKey);
+    renderLeaderboard();
+  }
+};
+
+function updateMenuInfo() {
+  const n = QUESTIONS.length;
+  document.getElementById('menu-subtitle').textContent = `${n} Soal • Referensi IRODORI`;
+  document.getElementById('timer-badge').textContent = `⏱️ Min ${CONFIG.minTimePerQuestion}s (adaptif)`;
+}
+
+updateMenuInfo();
+updateSessionUI();
+showScreen('menu-screen');
+</script>
+</body>
+</html>
